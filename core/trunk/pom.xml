@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- This is a version 4 POM file. -->
     <modelVersion>4.0.0</modelVersion>
@@ -21,7 +22,7 @@
         <module>dummy</module>
         <module>initiator</module>
         <module>examples</module>
-  </modules>
+    </modules>
 
     <properties>
         <javaVersion>1.6</javaVersion> <!-- Requires 1.6.0_25 or later due to bug in generics -->
@@ -160,12 +161,12 @@
                     <version>1.0-alpha-1</version>
                 </plugin>
                 <plugin>
-                   <groupId>org.apache.maven.plugins</groupId>
-                   <artifactId>maven-assembly-plugin</artifactId>
-                   <version>2.2-beta-3</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.2-beta-3</version>
                 </plugin>
             </plugins>
-        </pluginManagement>    
+        </pluginManagement>
     </build>
 
     <repositories>
@@ -176,7 +177,7 @@
             <layout>default</layout>
         </repository>
 
-         <repository>
+        <repository>
             <id>maven1-repository.dev.java.net</id>
             <name>Java.net Repository for Maven 1</name>
             <url>http://download.java.net/maven/1/</url>
@@ -206,7 +207,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
-                <version>${springVersion}</version>                
+                <version>${springVersion}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
@@ -347,8 +348,53 @@
 
     <!-- project metadata -->
     <distributionManagement>
+        <repository>
+            <id>reposilite-repository-releases</id>
+            <name>Reposilite Repository</name>
+            <url>https://reposilite.reshare.indexdata.com/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>reposilite-repository</id>
+            <name>Reposilite Repository</name>
+            <url>https://reposilite.reshare.indexdata.com/snapshots</url>
+        </snapshotRepository>
     </distributionManagement>
-    
+
+    <profiles>
+        <profile>
+            <id>deploy-ncip-client</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.4</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy-reshare</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>deploy-file</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                    <file>target/${project.artifactId}-${project.version}.jar</file>
+                                    <repositoryId>reposilite-repository-releases</repositoryId>
+                                    <url>https://reposilite.reshare.indexdata.com/releases</url>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <version>${project.version}</version>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <organization>
         <name>eXtensible Catalog Organization</name>
         <url>http://www.extensiblecatalog.org/</url>

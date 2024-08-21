@@ -1,0 +1,33 @@
+name: mvn 
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '6'
+          distribution: 'temurin'
+      - name: install
+        working-directory: ./core/trunk
+        run: mvn install
+      - uses: s4u/maven-settings-action@v3.0.0
+        with:
+          servers: |
+            [{
+                "id": "reposilite-repository-releases",
+                "username": "${{ secrets.REPOSILITE_USERNAME }}",
+                "password": "${{ secrets.REPOSILITE_PASSWORD }}"
+            }]
+        if: github.event_name == 'release' && github.event.action == 'created'
+      - name: Publish package
+        working-directory: ./core/trunk
+        run: mvn clean deploy -Pdeploy-ncip-toolkit
+        if: github.event_name == 'release' && github.event.action == 'created'
