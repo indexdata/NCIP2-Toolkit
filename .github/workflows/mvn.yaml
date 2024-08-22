@@ -27,8 +27,6 @@ jobs:
                 "username": "${{ secrets.REPOSILITE_USERNAME }}",
                 "password": "${{ secrets.REPOSILITE_PASSWORD }}"
             }]
-        if: github.event_name == 'release' && github.event.action == 'created'
       - name: Publish package
         working-directory: ./core/trunk
         run: mvn clean deploy -Pdeploy-ncip-toolkit
-        if: github.event_name == 'release' && github.event.action == 'created'
